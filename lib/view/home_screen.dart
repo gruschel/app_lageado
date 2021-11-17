@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lageado_ac/model/test/json_test.dart';
 import 'package:lageado_ac/view/widgets/home_widgets.dart';
+import 'package:lageado_ac/model/vehicle_model.dart';
 
 
 class HomeScreen extends StatefulWidget{
@@ -15,18 +16,27 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin{
     const Center(child: Icon(Icons.car_repair)),
     const Center(child: Icon(Icons.people))
   ];
-  final _kTabPages = <Widget>[
-    homeScreen(),
-    vehiclesList(JSON_Test_Internal.cars.length, JSON_Test_Internal.cars),
-    servicesList(15),
-    ownersList(15),
-  ];
+
+  var _kTabPages = <Widget>[];
+
+  @override
+  initState(){
+    super.initState();
+  }
 
   late TabController _tabController;
 
   @override
   Widget build(BuildContext context) {
     _tabController = TabController(length: _kTabs.length, vsync: this);
+    _kTabPages =
+    <Widget>[
+      homeScreen(),
+      vehiclesList(context, JSON_Test_Internal.cars.length, JSON_Test_Internal.cars),
+      servicesList(15),
+      ownersList(15)
+    ];
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,

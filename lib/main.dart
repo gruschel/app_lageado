@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lageado_ac/view/home_screen.dart';
 import 'package:lageado_ac/view/splash_screen.dart';
+import 'package:lageado_ac/view/vehicle_screen_main.dart';
 
 void main() async{
   /* TODO Initialize Firebase */
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: HomeScreen(),
+      //home: VehicleScreen(license: "1"),
     );
   }
 }

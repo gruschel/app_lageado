@@ -1,13 +1,31 @@
-import 'package:flutter/material.dart';
-
 class VehicleModel{
 
-  String license = "XXX9999";
-  String owner = "SEM DONO";
-  String model = "CARRO GENÉRICO";
-  String year = "1800";
-  String renavam = "---";
+  String license;
+  int ownerid;
+  String model;
+  String year;
+  String renavam;
 
-  VehicleModel(this.license, this.owner, this.model, this.renavam, this.year);
+  VehicleModel({
+    this.license = "XXX9999",
+    this.ownerid  = -1,
+    this.model = "CARRO GENÉRICO",
+    this.renavam = "1800",
+    this.year = "---"}
+      );
+
+  factory VehicleModel.fromJSON(Map<String, dynamic> json){
+    String _key = json.keys.elementAt(0).toString();
+    return VehicleModel(license: _key,
+        ownerid: int.parse(json[_key]["ownerid"]),
+        model: json[_key]["model"].toString(),
+        renavam: json[_key]["RENAVAM"].toString(),
+        year: json[_key]["year"].toString()
+    );
+  }
+
+  void printVehicle(){
+    print("License: $license - id: $ownerid\n   - $model : $year\n   - RENAVAM: $renavam");
+  }
 }
 
