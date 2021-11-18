@@ -124,119 +124,120 @@ class _VehicleScreen extends State<VehicleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey,
-      body: Column(
-        children: [
-          Container(
-            height: 100,
-            color: Colors.blue,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Text(
-                  vehicleinfo.renavam, textAlign: TextAlign.right,
-                ),
-                Text(
-                    vehicleinfo.license, style: const TextStyle(fontSize: 32)
+      body:
+      CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+                backgroundColor: Colors.blue,
+                pinned: true,
+                snap: false,
+                floating: false,
+                expandedHeight: 100,
+                //titleSpacing: 2,
+                flexibleSpace: FlexibleSpaceBar(
+                    centerTitle: true,
+                    //titlePadding: const EdgeInsets.only(top: 10),
+                    title:
+                    Text(
+                        vehicleinfo.license, style: const TextStyle(fontSize: 32, letterSpacing: 2)
+                    )
                 )
-              ],
-            )
-          ),
-          Expanded(
-            child: _isLoading ? const Center(child: CircularProgressIndicator(color: Colors.green)) :
-            ListView(
-                children: [
-                  ExpansionTile(
-                      leading: const Icon(Icons.directions_car, size: 32,),
-                      title: const Text("VEÍCULO", textAlign: TextAlign.center, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                      initiallyExpanded: true,
-                      //childrenPadding: EdgeInsets.only(top: 10),
-                      children: <Widget>[
-                        ListTile(
-                            title:
-                            Text(vehicleinfo.model, textAlign: TextAlign.center)
-                        ),
-                        if(_isEditing) const Divider(),
-                        ListTile(
-                            title: Text(vehicleinfo.year, textAlign: TextAlign.center)
-                        ),
-                        if(_isEditing) const Divider(),
-                        ListTile(
-                            title: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text("RENAVAM"),
-                                  SizedBox(width: 10),
-                                  Text(vehicleinfo.renavam)]
+            ),
+            SliverFillRemaining(
+              child: Expanded(
+                child: _isLoading ? const Center(child: CircularProgressIndicator(color: Colors.green)) :
+                ListView(
+                    children: [
+                      ExpansionTile(
+                          leading: const Icon(Icons.directions_car, size: 32,),
+                          title: const Text("VEÍCULO", textAlign: TextAlign.center, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                          initiallyExpanded: true,
+                          //childrenPadding: EdgeInsets.only(top: 10),
+                          children: <Widget>[
+                            ListTile(
+                                title:
+                                Text(vehicleinfo.model, textAlign: TextAlign.center)
+                            ),
+                            if(_isEditing) const Divider(),
+                            ListTile(
+                                title: Text(vehicleinfo.year, textAlign: TextAlign.center)
+                            ),
+                            if(_isEditing) const Divider(),
+                            ListTile(
+                                title: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text("RENAVAM"),
+                                      SizedBox(width: 10),
+                                      Text(vehicleinfo.renavam)]
+                                )
+                            ),
+                          ]
+                      ),
+                      ExpansionTile(
+                          leading: const Icon(Icons.person, size: 32,),
+                          title: const Text("PROPRIETÁRIO(A)", textAlign: TextAlign.center, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                          //childrenPadding: EdgeInsets.only(top: 10),
+                          children: <Widget>[
+                            ListTile(
+                              title:
+                              Text(ownerinfo.name, textAlign: TextAlign.center),
+                              onLongPress: (){Navigator.push(context,MaterialPageRoute(builder: (context) {return OwnerScreen(ownerId: ownerinfo.id);}));},
+                            ),
+                            if(_isEditing) const Divider(),
+                            ListTile(
+                              title:Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    const Padding(
+                                      padding: EdgeInsets.only(left: 16,right: 10),
+                                      child: Icon(Icons.phone, color: Colors.black26),
+                                    ),
+                                    Text(ownerinfo.phone, textAlign: TextAlign.center),
+                                    const SizedBox(width:60),
+                                    const Padding(
+                                      padding: EdgeInsets.only(left: 16,right: 10),
+                                      child: Icon(Icons.alternate_email, color: Colors.black26),
+                                    ),
+                                    Text(ownerinfo.email, textAlign: TextAlign.center),
+                                  ]
+                              ),
+                            ),
+                            if(_isEditing) const Divider(),
+                            ListTile(
+                              title: Text(ownerinfo.adress, textAlign: TextAlign.center),
+                              onLongPress: (){Navigator.push(context,MaterialPageRoute(builder: (context) {return OwnerScreen(ownerId: ownerinfo.id);}));},
+                            ),
+                            if(_isEditing) Divider(),
+                            ListTile(
+                              title: Text(ownerinfo.district, textAlign: TextAlign.center),
+                              onLongPress: (){Navigator.push(context,MaterialPageRoute(builder: (context) {return OwnerScreen(ownerId: ownerinfo.id);}));},
+                            ),
+                          ]
+                      ),
+                      ExpansionTile(
+                          leading: const Icon(Icons.car_repair, size: 32,),
+                          title: const Text("SERVIÇOS", textAlign: TextAlign.center, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                          children: <Widget>[
+                            servicesinfo.isNotEmpty ?
+                            ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemCount: servicesinfo.length,
+                                padding: EdgeInsets.all(16),
+                                itemBuilder: (BuildContext context, int i){
+                                  return _buildServices(context, i );
+                                }
                             )
-                        ),
-                      ]
-                  ),
-                  ExpansionTile(
-                      leading: const Icon(Icons.person, size: 32,),
-                      title: const Text("PROPRIETÁRIO(A)", textAlign: TextAlign.center, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                      //childrenPadding: EdgeInsets.only(top: 10),
-                      children: <Widget>[
-                        ListTile(
-                          title:
-                          Text(ownerinfo.name, textAlign: TextAlign.center),
-                          onLongPress: (){Navigator.push(context,MaterialPageRoute(builder: (context) {return OwnerScreen(ownerId: ownerinfo.id);}));},
-                        ),
-                        if(_isEditing) const Divider(),
-                        ListTile(
-                          title:Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 16,right: 10),
-                                  child: Icon(Icons.phone, color: Colors.black26),
-                                ),
-                                Text(ownerinfo.phone, textAlign: TextAlign.center),
-                                const SizedBox(width:60),
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 16,right: 10),
-                                  child: Icon(Icons.alternate_email, color: Colors.black26),
-                                ),
-                                Text(ownerinfo.email, textAlign: TextAlign.center),
-                              ]
-                          ),
-                        ),
-                        if(_isEditing) const Divider(),
-                        ListTile(
-                          title: Text(ownerinfo.adress, textAlign: TextAlign.center),
-                          onLongPress: (){Navigator.push(context,MaterialPageRoute(builder: (context) {return OwnerScreen(ownerId: ownerinfo.id);}));},
-                        ),
-                        if(_isEditing) Divider(),
-                        ListTile(
-                          title: Text(ownerinfo.district, textAlign: TextAlign.center),
-                          onLongPress: (){Navigator.push(context,MaterialPageRoute(builder: (context) {return OwnerScreen(ownerId: ownerinfo.id);}));},
-                        ),
-                      ]
-                  ),
-                  ExpansionTile(
-                      leading: const Icon(Icons.car_repair, size: 32,),
-                      title: const Text("SERVIÇOS", textAlign: TextAlign.center, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                      children: <Widget>[
-                        servicesinfo.isNotEmpty ?
-                        ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemCount: servicesinfo.length,
-                            padding: EdgeInsets.all(16),
-                            itemBuilder: (BuildContext context, int i){
-                              return _buildServices(context, i );
-                            }
-                        )
-                            : const ListTile(
-                            title: Text("Nenhum Serviço registrado")
-                        )
-                      ]
-                  ),
-                ]
-            ),
-            ),
-          //)
-        ],
-      )
-    );
+                                : const ListTile(
+                                title: Text("Nenhum Serviço registrado")
+                            )
+                          ]
+                      ),
+                    ]
+                ),
+              ),
+            )
+    ]));
   }
 }

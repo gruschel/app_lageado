@@ -81,57 +81,58 @@ class _ServiceScreen extends State<ServiceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey,
-      body: Column(
-        children: [
-          Container(
-            height: 100,
-            color: Colors.blue,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Text(
-                  "O.S. ID: " + serviceInfo.id.toString(),
-                  textAlign: TextAlign.right,
-                ),
-                SizedBox(height: 30),
-                Text(
-                    serviceInfo.serviceType, style: const TextStyle(fontSize: 32)
+      body:
+      CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+                backgroundColor: Colors.blue,
+                pinned: true,
+                snap: false,
+                floating: false,
+                expandedHeight: 100,
+                //titleSpacing: 2,
+                flexibleSpace: FlexibleSpaceBar(
+                    centerTitle: true,
+                    //titlePadding: const EdgeInsets.only(top: 10),
+                    title:
+                    Text(
+                      "O.S: " + serviceInfo.id.toString() + " - " + serviceInfo.serviceType,
+                      style: TextStyle(fontSize: 20),
+                    ),
                 )
-              ],
-            )
-          ),
-          Expanded(
-            child: _isLoading ? const Center(child: CircularProgressIndicator(color: Colors.green)) :
-            ListView(
-              /*scrollDirection: Axis.vertical,
+            ),
+            SliverFillRemaining(
+              child: Expanded(
+                  child: _isLoading ? const Center(child: CircularProgressIndicator(color: Colors.green)) :
+                  ListView(
+                    /*scrollDirection: Axis.vertical,
               shrinkWrap: true,*/
-              children:<Widget>[
-                /*ListTile(
+                    children:<Widget>[
+                      /*ListTile(
                   title:
                   Text(serviceInfo.serviceType, textAlign: TextAlign.center)
                 ),*/
-                ListTile(
-                  title:
-                  Text(translateServiceStatus(serviceInfo.status), textAlign: TextAlign.center)
-                ),
-                ListTile(
-                    title:
-                    Text("Início: " + serviceInfo.startDate, textAlign: TextAlign.center)
-                ),
-                ListTile(
-                    title:
-                    Text("Fim: " + serviceInfo.endDate, textAlign: TextAlign.center)
-                ),
-                ListTile(
-                    title:
-                    Text(serviceInfo.description, textAlign: TextAlign.left)
-                ),
-              ],
+                      ListTile(
+                          title:
+                          Text(translateServiceStatus(serviceInfo.status), textAlign: TextAlign.center)
+                      ),
+                      ListTile(
+                          title:
+                          Text("Início: " + serviceInfo.startDate, textAlign: TextAlign.center)
+                      ),
+                      ListTile(
+                          title:
+                          Text("Fim: " + serviceInfo.endDate, textAlign: TextAlign.center)
+                      ),
+                      ListTile(
+                          title:
+                          Text(serviceInfo.description, textAlign: TextAlign.left)
+                      ),
+                    ],
+                  )
+              )
             )
-          )
-          //)
-        ],
-      )
+          ])
     );
   }
 }

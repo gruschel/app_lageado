@@ -61,63 +61,64 @@ class _OwnerScreen extends State<OwnerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey,
-      body: Column(
-        children: [
-          Container(
-            height: 100,
-            color: Colors.blue,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Text(
-                  "ID: " + ownerInfo.id.toString(),
-                  textAlign: TextAlign.right,
-                ),
-                const SizedBox(height: 30),
-                Text(
-                    ownerInfo.name, style: const TextStyle(fontSize: 24)
-                )
-              ],
-            )
-          ),
-          Expanded(
-            child: _isLoading ? const Center(child: CircularProgressIndicator(color: Colors.green)) :
-            ListView(
-              /*scrollDirection: Axis.vertical,
-              shrinkWrap: true,*/
-              children:<Widget>[
-                ListTile(
-                  title:Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        const Padding(
-                          padding: EdgeInsets.only(left: 16,right: 10),
-                          child: Icon(Icons.phone, color: Colors.black26),
-                        ),
-                        Text(ownerInfo.phone, textAlign: TextAlign.center),
-                        const SizedBox(width:60),
-                        const Padding(
-                          padding: EdgeInsets.only(left: 16,right: 10),
-                          child: Icon(Icons.alternate_email, color: Colors.black26),
-                        ),
-                        Text(ownerInfo.email, textAlign: TextAlign.center),
-                      ]
+      body:
+      CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+                backgroundColor: Colors.blue,
+                pinned: true,
+                snap: false,
+                floating: false,
+                expandedHeight: 100,
+                //titleSpacing: 2,
+                flexibleSpace: FlexibleSpaceBar(
+                  centerTitle: true,
+                  //titlePadding: const EdgeInsets.only(top: 10),
+                  title:
+                  Text(
+                    ownerInfo.id.toString() + " - " + ownerInfo.name,
+                    style: TextStyle(fontSize: 20),
                   ),
-                ),
-                if(_isEditing) const Divider(),
-                ListTile(
-                    title: Text(ownerInfo.adress, textAlign: TextAlign.center)
-                ),
-                if(_isEditing) const Divider(),
-                ListTile(
-                    title: Text(ownerInfo.district, textAlign: TextAlign.center)
-                ),
-              ],
+                )
+            ),
+            SliverFillRemaining(
+                child: Expanded(
+                    child: _isLoading ? const Center(child: CircularProgressIndicator(color: Colors.green)) :
+                    ListView(
+                      /*scrollDirection: Axis.vertical,
+              shrinkWrap: true,*/
+                      children:<Widget>[
+                        ListTile(
+                          title:Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 16,right: 10),
+                                  child: Icon(Icons.phone, color: Colors.black26),
+                                ),
+                                Text(ownerInfo.phone, textAlign: TextAlign.center),
+                                const SizedBox(width:60),
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 16,right: 10),
+                                  child: Icon(Icons.alternate_email, color: Colors.black26),
+                                ),
+                                Text(ownerInfo.email, textAlign: TextAlign.center),
+                              ]
+                          ),
+                        ),
+                        if(_isEditing) const Divider(),
+                        ListTile(
+                            title: Text(ownerInfo.adress, textAlign: TextAlign.center)
+                        ),
+                        if(_isEditing) const Divider(),
+                        ListTile(
+                            title: Text(ownerInfo.district, textAlign: TextAlign.center)
+                        ),
+                      ],
+                    )
+                )
             )
-          )
-          //)
-        ],
-      )
+          ]),
     );
   }
 }
