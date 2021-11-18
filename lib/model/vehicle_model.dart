@@ -10,8 +10,8 @@ class VehicleModel{
     this.license = "XXX9999",
     this.ownerid  = -1,
     this.model = "CARRO GENÉRICO",
-    this.renavam = "1800",
-    this.year = "---"}
+    this.renavam = "---",
+    this.year = "1800"}
       );
 
   factory VehicleModel.fromJSON(Map<String, dynamic> json){
@@ -19,7 +19,7 @@ class VehicleModel{
     return VehicleModel(license: _key,
         ownerid: int.parse(json[_key]["ownerid"]),
         model: json[_key]["model"].toString(),
-        renavam: json[_key]["RENAVAM"].toString(),
+        renavam: json[_key]["renavam"].toString(),
         year: json[_key]["year"].toString()
     );
   }

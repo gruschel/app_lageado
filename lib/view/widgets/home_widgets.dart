@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lageado_ac/view/widgets/service_screen_main.dart';
 
 import '../vehicle_screen_main.dart';
+import 'owner_screen_main.dart';
 
 Widget homeScreen(){
   return Container(
@@ -23,6 +25,25 @@ void tryNavigateToVehicle(BuildContext context, String license){
           }));
 }
 
+void tryNavigateToService(BuildContext context, int id){
+  //print("Try Navigate $license");
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) {
+            return ServiceScreen(serviceId: id);
+          }));
+}
+
+void tryNavigateToOwner(BuildContext context, int id){
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) {
+            return OwnerScreen(ownerId: id);
+          }));
+}
+
 Widget vehiclesList(BuildContext context, int numItens, Map<String, dynamic> cars){
   return ListView.builder(
   itemCount: numItens,
@@ -37,27 +58,32 @@ Widget vehiclesList(BuildContext context, int numItens, Map<String, dynamic> car
   );
 }
 
-Widget servicesList(int numItens){
+Widget servicesList(BuildContext context, int numItens, Map<int, dynamic> services){
 
   return ListView.builder(
   itemCount: numItens,
   padding: const EdgeInsets.all(16),
   itemBuilder: (BuildContext context, int i){
+    int _id = services.keys.elementAt(i);
     return ListTile(
-      title: Text("service $i")
+      title: Text("O.S.: $_id"),
+      onTap : (){tryNavigateToService(context, _id);} ,
     );
   }
   );
 }
 
-Widget ownersList(int numItens){
+Widget ownersList(BuildContext context, int numItens, Map<int, dynamic> owners){
 
   return ListView.builder(
   itemCount: numItens,
   padding: const EdgeInsets.all(16),
   itemBuilder: (BuildContext context, int i){
+    int _id = owners.keys.elementAt(i);
     return ListTile(
-      title: Text("person $i")
+      leading: Icon(Icons.people),
+      title: Text("$_id - ${owners[_id]["name"]}", textAlign: TextAlign.center),
+      onTap : (){tryNavigateToOwner(context, _id);} ,
     );
   }
   );

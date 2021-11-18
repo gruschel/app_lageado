@@ -33,21 +33,22 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin{
     <Widget>[
       homeScreen(),
       vehiclesList(context, JSON_Test_Internal.cars.length, JSON_Test_Internal.cars),
-      servicesList(15),
-      ownersList(15)
+      servicesList(context, JSON_Test_Internal.services.length, JSON_Test_Internal.services),
+      ownersList(context, JSON_Test_Internal.owners.length, JSON_Test_Internal.owners)
     ];
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: Colors.red,
-        leading: IconButton(
+        /*leading: IconButton(
           onPressed: () {},
           icon: const Icon(Icons.menu),
-        ),
-        title: Text("stablishment_name"),
+        ),*/
+        title: const Text("Lageado Auto Center", textAlign: TextAlign.center),
         actions: [
           IconButton(
-              tooltip: "search_main_tooltip",
+              //tooltip: "search_main_tooltip",
               icon: Icon(Icons.search),
               onPressed: (){}
           )

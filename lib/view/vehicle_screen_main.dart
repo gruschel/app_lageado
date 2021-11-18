@@ -3,6 +3,8 @@ import 'package:lageado_ac/model/owner_model.dart';
 import 'package:lageado_ac/model/test/json_test.dart';
 import 'package:lageado_ac/model/service_model.dart';
 import 'package:lageado_ac/model/vehicle_model.dart';
+import 'package:lageado_ac/view/widgets/owner_screen_main.dart';
+import 'package:lageado_ac/view/widgets/service_screen_main.dart';
 
 class VehicleScreen extends StatefulWidget{
   final String license;
@@ -105,6 +107,13 @@ class _VehicleScreen extends State<VehicleScreen> {
         ListTile(
           title: Text(servicesinfo[_index].serviceType),
           subtitle: Text(translateServiceStatus(servicesinfo[_index].status)),
+          onLongPress: (){
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) {
+                      return ServiceScreen(serviceId: servicesinfo[_index].id);
+                    }));},
         ),
         const Divider()
       ],
@@ -120,7 +129,17 @@ class _VehicleScreen extends State<VehicleScreen> {
           Container(
             height: 100,
             color: Colors.blue,
-            //padding: EdgeInset,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Text(
+                  vehicleinfo.renavam, textAlign: TextAlign.right,
+                ),
+                Text(
+                    vehicleinfo.license, style: const TextStyle(fontSize: 32)
+                )
+              ],
+            )
           ),
           Expanded(
             child: _isLoading ? const Center(child: CircularProgressIndicator(color: Colors.green)) :
@@ -153,13 +172,14 @@ class _VehicleScreen extends State<VehicleScreen> {
                       ]
                   ),
                   ExpansionTile(
-                      leading: const Icon(Icons.vpn_key_sharp, size: 32,),
+                      leading: const Icon(Icons.person, size: 32,),
                       title: const Text("PROPRIETÁRIO(A)", textAlign: TextAlign.center, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
                       //childrenPadding: EdgeInsets.only(top: 10),
                       children: <Widget>[
                         ListTile(
-                            title:
-                            Text(ownerinfo.name, textAlign: TextAlign.center)
+                          title:
+                          Text(ownerinfo.name, textAlign: TextAlign.center),
+                          onLongPress: (){Navigator.push(context,MaterialPageRoute(builder: (context) {return OwnerScreen(ownerId: ownerinfo.id);}));},
                         ),
                         if(_isEditing) const Divider(),
                         ListTile(
@@ -182,16 +202,18 @@ class _VehicleScreen extends State<VehicleScreen> {
                         ),
                         if(_isEditing) const Divider(),
                         ListTile(
-                            title: Text(ownerinfo.adress, textAlign: TextAlign.center)
+                          title: Text(ownerinfo.adress, textAlign: TextAlign.center),
+                          onLongPress: (){Navigator.push(context,MaterialPageRoute(builder: (context) {return OwnerScreen(ownerId: ownerinfo.id);}));},
                         ),
                         if(_isEditing) Divider(),
                         ListTile(
-                            title: Text(ownerinfo.district, textAlign: TextAlign.center)
+                          title: Text(ownerinfo.district, textAlign: TextAlign.center),
+                          onLongPress: (){Navigator.push(context,MaterialPageRoute(builder: (context) {return OwnerScreen(ownerId: ownerinfo.id);}));},
                         ),
                       ]
                   ),
                   ExpansionTile(
-                      leading: const Icon(Icons.vpn_key_sharp, size: 32,),
+                      leading: const Icon(Icons.car_repair, size: 32,),
                       title: const Text("SERVIÇOS", textAlign: TextAlign.center, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
                       children: <Widget>[
                         servicesinfo.isNotEmpty ?
