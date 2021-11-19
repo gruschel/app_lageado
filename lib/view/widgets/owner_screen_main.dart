@@ -3,6 +3,8 @@ import 'package:lageado_ac/model/owner_model.dart';
 import 'package:lageado_ac/model/test/json_test.dart';
 import 'package:lageado_ac/model/vehicle_model.dart';
 
+import '../vehicle_screen_main.dart';
+
 class OwnerScreen extends StatefulWidget{
   final int ownerId;
 
@@ -47,8 +49,9 @@ class _OwnerScreen extends State<OwnerScreen> {
     await getOwnerInfo();
     for (int i = 0; i < JSON_Test_Internal.cars.length; i ++){
       String _key = JSON_Test_Internal.cars.keys.elementAt(i);
-      if(JSON_Test_Internal.cars[_key]["license"] == i){
-        vehiclesList.add(_key);
+      if(JSON_Test_Internal.cars[_key]["ownerid"] == ownerId.toString()){
+        setState((){
+          vehiclesList.add(_key);});
       }
     }
     await Future.delayed(const Duration(seconds: 1));
@@ -84,38 +87,49 @@ class _OwnerScreen extends State<OwnerScreen> {
             SliverFillRemaining(
                 child: Expanded(
                     child: _isLoading ? const Center(child: CircularProgressIndicator(color: Colors.green)) :
-                    ListView(
-                      /*scrollDirection: Axis.vertical,
-              shrinkWrap: true,*/
-                      children:<Widget>[
-                        ListTile(
-                          title:Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 16,right: 10),
-                                  child: Icon(Icons.phone, color: Colors.black26),
-                                ),
-                                Text(ownerInfo.phone, textAlign: TextAlign.center),
-                                const SizedBox(width:60),
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 16,right: 10),
-                                  child: Icon(Icons.alternate_email, color: Colors.black26),
-                                ),
-                                Text(ownerInfo.email, textAlign: TextAlign.center),
-                              ]
+                      ListView(
+                        children:<Widget>[
+                          ListTile(
+                            trailing: const Icon(Icons.phone, color: Colors.black26),
+                            title:Text(ownerInfo.phone, textAlign: TextAlign.center),
                           ),
-                        ),
-                        if(_isEditing) const Divider(),
-                        ListTile(
-                            title: Text(ownerInfo.adress, textAlign: TextAlign.center)
-                        ),
-                        if(_isEditing) const Divider(),
-                        ListTile(
-                            title: Text(ownerInfo.district, textAlign: TextAlign.center)
-                        ),
-                      ],
-                    )
+                          ListTile(
+                            trailing: const Icon(Icons.alternate_email, color: Colors.black26),
+                            title:Text(ownerInfo.email, textAlign: TextAlign.center),
+                          ),
+                          ListTile(
+                              title: Text(ownerInfo.adress, textAlign: TextAlign.center),
+                              trailing: const Icon(Icons.location_on)
+                          ),
+                          ListTile(
+                              title: Text(ownerInfo.district, textAlign: TextAlign.center),
+                              trailing: const Icon(Icons.map)
+                          ),
+                          ExpansionTile(
+                            title: const Text("Veículos Cadastrados"),
+                            initiallyExpanded: true,
+                            leading: const Icon(Icons.directions_car),
+                            children: <Widget>[
+                              vehiclesList.isEmpty ?
+                              const ListTile(
+                                title: Text("Nenhum veículo registrado"),
+                              )
+                                  : ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemCount: vehiclesList.length,
+                                itemBuilder: (BuildContext context, int i){
+                                  return ListTile(
+                                      title: Text(vehiclesList[i]),
+                                      onLongPress: (){
+                                        Navigator.push( context, MaterialPageRoute( builder: (context) { return VehicleScreen(license: vehiclesList[i]);}));}
+                                  );
+                                },
+                              )
+                            ],
+                          )
+                        ],
+                      )
                 )
             )
           ]),

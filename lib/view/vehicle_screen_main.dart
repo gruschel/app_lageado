@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:lageado_ac/model/owner_model.dart';
 import 'package:lageado_ac/model/test/json_test.dart';
@@ -37,15 +40,11 @@ class _VehicleScreen extends State<VehicleScreen> {
     getVehicleInfo();
     getOwnerInfo();
     getServiceInfo();
-    vehicleinfo.printVehicle();
-    ownerinfo.printOwner();
     if(servicesinfo.isNotEmpty) {
       for(int i = 0; i < servicesinfo.length;i++) {
-        servicesinfo[i].printService();
       }
     }
     await Future.delayed(const Duration(seconds: 1));
-    //print("Deu!");
     setState((){
       _isLoading = false;
     });
@@ -106,6 +105,7 @@ class _VehicleScreen extends State<VehicleScreen> {
       children: <Widget>[
         ListTile(
           title: Text(servicesinfo[_index].serviceType),
+          trailing: const Icon(Icons.build),
           subtitle: Text(translateServiceStatus(servicesinfo[_index].status)),
           onLongPress: (){
             Navigator.push(
@@ -155,12 +155,13 @@ class _VehicleScreen extends State<VehicleScreen> {
                           //childrenPadding: EdgeInsets.only(top: 10),
                           children: <Widget>[
                             ListTile(
-                                title:
-                                Text(vehicleinfo.model, textAlign: TextAlign.center)
+                              title:Text(vehicleinfo.model, textAlign: TextAlign.center),
+                              trailing: Icon(Icons.directions_car),
                             ),
                             if(_isEditing) const Divider(),
                             ListTile(
-                                title: Text(vehicleinfo.year, textAlign: TextAlign.center)
+                              title: Text(vehicleinfo.year, textAlign: TextAlign.center),
+                              trailing: Icon(Icons.date_range),
                             ),
                             if(_isEditing) const Divider(),
                             ListTile(
@@ -170,7 +171,8 @@ class _VehicleScreen extends State<VehicleScreen> {
                                       Text("RENAVAM"),
                                       SizedBox(width: 10),
                                       Text(vehicleinfo.renavam)]
-                                )
+                                ),
+                              trailing: Icon(Icons.assignment_outlined),
                             ),
                           ]
                       ),
@@ -183,6 +185,7 @@ class _VehicleScreen extends State<VehicleScreen> {
                               title:
                               Text(ownerinfo.name, textAlign: TextAlign.center),
                               onLongPress: (){Navigator.push(context,MaterialPageRoute(builder: (context) {return OwnerScreen(ownerId: ownerinfo.id);}));},
+                              trailing: Icon(Icons.assignment_ind),
                             ),
                             if(_isEditing) const Divider(),
                             ListTile(
@@ -223,6 +226,7 @@ class _VehicleScreen extends State<VehicleScreen> {
                             ListView.builder(
                                 scrollDirection: Axis.vertical,
                                 shrinkWrap: true,
+                                physics: const ClampingScrollPhysics(),
                                 itemCount: servicesinfo.length,
                                 padding: EdgeInsets.all(16),
                                 itemBuilder: (BuildContext context, int i){

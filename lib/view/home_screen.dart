@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:lageado_ac/model/test/json_test.dart';
 import 'package:lageado_ac/view/widgets/home_widgets.dart';
 import 'package:lageado_ac/model/vehicle_model.dart';
+import 'package:firebase_database/firebase_database.dart';
+//import 'package:fluttertoast/fluttertoast.dart';
 
 
 class HomeScreen extends StatefulWidget{
@@ -22,6 +26,14 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin{
   @override
   initState(){
     super.initState();
+    _retrieveVehicles();
+  }
+  Future<void> _retrieveVehicles() async {
+    final dbVehicles = FirebaseDatabase.instance.reference().child("vehicles");
+    print("deu");
+    /*await dbVehicles.once().then((DataSnapshot dataSnapshot){
+      print(json.encode(dataSnapshot.value));
+    });*/
   }
 
   late TabController _tabController;

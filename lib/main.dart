@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:lageado_ac/view/home_screen.dart';
 import 'package:lageado_ac/view/splash_screen.dart';
 import 'package:lageado_ac/view/vehicle_screen_main.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() async{
-  /* TODO Initialize Firebase */
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 

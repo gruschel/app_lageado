@@ -1,0 +1,85 @@
+{
+  "project_info": {
+    "project_number": "247102108631",
+    "firebase_url": "https://oficina-app-d0bac-default-rtdb.firebaseio.com",
+    "project_id": "oficina-app-d0bac",
+    "storage_bucket": "oficina-app-d0bac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:247102108631:android:8bf248dbc315341fac5192",
+        "android_client_info": {
+          "package_name": "com.example.app_lageado"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "247102108631-q8l2lr5m0u7deen47qq7m69tu0gpvhh9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.app_lageado",
+            "certificate_hash": "20c23d315553a552b1ef08f2bcb0840fd6a22146"
+          }
+        },
+        {
+          "client_id": "247102108631-ceurettbtgliqdgq184t1o91njc8fp52.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAk3kInuMDzM3e49X21ixRRTqy-dM104ps"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "247102108631-ceurettbtgliqdgq184t1o91njc8fp52.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:247102108631:android:f9e877674dea2abaac5192",
+        "android_client_info": {
+          "package_name": "com.example.lageado_ac"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "247102108631-emj7mu65jv1q1ti77p0s6nerifvs948t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.lageado_ac",
+            "certificate_hash": "20c23d315553a552b1ef08f2bcb0840fd6a22146"
+          }
+        },
+        {
+          "client_id": "247102108631-ceurettbtgliqdgq184t1o91njc8fp52.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAk3kInuMDzM3e49X21ixRRTqy-dM104ps"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "247102108631-ceurettbtgliqdgq184t1o91njc8fp52.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

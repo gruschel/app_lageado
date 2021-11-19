@@ -97,7 +97,7 @@ class _ServiceScreen extends State<ServiceScreen> {
                     title:
                     Text(
                       "O.S: " + serviceInfo.id.toString() + " - " + serviceInfo.serviceType,
-                      style: TextStyle(fontSize: 20),
+                      style: TextStyle(fontSize: 16),
                     ),
                 )
             ),
@@ -105,13 +105,7 @@ class _ServiceScreen extends State<ServiceScreen> {
               child: Expanded(
                   child: _isLoading ? const Center(child: CircularProgressIndicator(color: Colors.green)) :
                   ListView(
-                    /*scrollDirection: Axis.vertical,
-              shrinkWrap: true,*/
                     children:<Widget>[
-                      /*ListTile(
-                  title:
-                  Text(serviceInfo.serviceType, textAlign: TextAlign.center)
-                ),*/
                       ListTile(
                           title:
                           Text(translateServiceStatus(serviceInfo.status), textAlign: TextAlign.center)

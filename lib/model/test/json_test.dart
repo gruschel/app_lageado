@@ -56,35 +56,35 @@ class JSON_Test_Internal{
   static Map<int, dynamic> owners =
   {
     1 : {
-      "name": "Carlos",
+      "name": "Carlos Silva da Costa",
       "phone": "888888888",
       "email": "teste@teste.com.br",
       "adress": "Rua qualquer",
       "district": "Bairro qualquer",
     },
     30 : {
-      "name": "Trevor",
+      "name": "Trevor Maverick",
       "phone": "777777777",
       "email": "ttt@ttt.com.br",
       "adress": "Rua qualquer2",
       "district": "Bairro qualquer2",
     },
     25 : {
-      "name": "Santana",
+      "name": "Santana Santos",
       "phone": "66666666",
       "email": "ss@bb.com",
       "adress": "Calle 13",
       "district": "Bairro Top",
     },
     2 : {
-      "name": "Ronaldinho",
+      "name": "Ronaldinho Gaúcho",
       "phone": "555555555",
       "email": "mengao@mengao.com.br",
       "adress": "Favela",
       "district": "Bairro do trafico",
     },
     5 : {
-      "name": "Bolsonaro",
+      "name": "Jair Messias Bolsonaro",
       "phone": "111111111",
       "email": "brasil@gov.com.br",
       "adress": "Todo lugar",
