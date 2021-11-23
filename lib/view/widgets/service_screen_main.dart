@@ -56,12 +56,12 @@ class _ServiceScreen extends State<ServiceScreen> {
   Future<void> getServiceInfo() async{
     serviceInfo = ServiceModel();
     JSON_Test_Internal.services.forEach((key, value) {
-      if(key == serviceId) {
+      /*if(key == serviceId) {
         setState((){
           serviceInfo  = ServiceModel.fromJSON({key:value});
         });
         return;
-      }
+      }*/
     });
   }
 
@@ -75,6 +75,54 @@ class _ServiceScreen extends State<ServiceScreen> {
       case 5: return "Finalizado"; break;
       default: return "Indefinido"; break;
     }
+  }
+
+  Widget _showStatusDialog(){
+    return SimpleDialog(
+      title: const Text("Status"),
+      children: <Widget>[
+        ListTile(
+          leading: const Icon(Icons.account_circle),
+          title: Text("Em Aberto"),
+          onTap:(){}
+        ),
+        ListTile(
+          leading: const Icon(Icons.account_circle),
+          title: Text("Orçamento"),
+          onTap:(){}
+        ),
+        ListTile(
+          leading: const Icon(Icons.account_circle),
+          title: Text("Aprovado"),
+          onTap:(){}
+        ),
+        ListTile(
+          leading: const Icon(Icons.account_circle),
+          title: Text("Em Serviço"),
+          onTap:(){}
+        ),
+        ListTile(
+          leading: const Icon(Icons.account_circle),
+          title: Text("Aguardando Peça"),
+          onTap:(){}
+        ),
+        ListTile(
+          leading: const Icon(Icons.account_circle),
+          title: Text("Finalizado"),
+          onTap:(){}
+        ),
+      ],
+    );
+  }
+  Container _showDateDialog(bool _start){
+    return Container(
+
+    );
+  }
+  Container _showObsDialog(){
+    return Container(
+
+    );
   }
 
     @override

@@ -9,6 +9,7 @@ import 'package:lageado_ac/model/vehicle_model.dart';
 import 'package:lageado_ac/view/widgets/owner_screen_main.dart';
 import 'package:lageado_ac/view/widgets/service_screen_main.dart';
 
+
 class VehicleScreen extends StatefulWidget{
   final String license;
 
@@ -26,6 +27,9 @@ class _VehicleScreen extends State<VehicleScreen> {
   late OwnerModel ownerinfo;
   late List<ServiceModel> servicesinfo;
   bool _isEditing = false;
+  late DatabaseReference _vehiclesDB;
+  late DatabaseReference _servicesDB;
+  late DatabaseReference _ownersDB;
 
   _VehicleScreen({required this.license});
 
@@ -53,7 +57,11 @@ class _VehicleScreen extends State<VehicleScreen> {
   //@Todo: filter info
   Future<void> getVehicleInfo() async{
     vehicleinfo = VehicleModel();
-    JSON_Test_Internal.cars.forEach((key, value) {
+    _vehiclesDB = FirebaseDatabase.instance.reference().child("vehicles");
+    await _vehiclesDB.once().then((DataSnapshot dataSnapshot){
+    final s = json.encode(dataSnapshot.value);
+    Map<String, dynamic> decoded = json.decode(s);
+    decoded.forEach((key, value) {
       if(key == license) {
         setState((){
           vehicleinfo = VehicleModel.fromJSON({key:value});
@@ -61,31 +69,91 @@ class _VehicleScreen extends State<VehicleScreen> {
         return;
       }
     });
+    });
+
   }
 
   //@Todo: filter info
   Future<void> getOwnerInfo() async{
     ownerinfo = OwnerModel();
-    JSON_Test_Internal.owners.forEach((key, value) {
-      if(key == vehicleinfo.ownerid) {
-        setState((){
-          ownerinfo = OwnerModel.fromJSON({key:value});
-        });
-        return;
-      }
+    _ownersDB = FirebaseDatabase.instance.reference().child("services");
+    await _ownersDB.once().then((DataSnapshot dataSnapshot){
+      final s = json.encode(dataSnapshot.value);
+      Map<String, dynamic> decoded = json.decode(s);
+      decoded.forEach((key, value) {
+        if(key == vehicleinfo.ownerid) {
+          setState((){
+            ownerinfo = OwnerModel.fromJSON({key:value});
+          });
+          return;
+        }
+      });
     });
   }
 
   //@Todo: filter info
   Future<void> getServiceInfo() async{
     servicesinfo = [];
-    JSON_Test_Internal.services.forEach((key, value) {
+    _servicesDB = FirebaseDatabase.instance.reference().child("services");
+    await _servicesDB.once().then((DataSnapshot dataSnapshot){
+      final s = json.encode(dataSnapshot.value);
+      Map<String, dynamic> decoded = json.decode(s);
+      decoded.forEach((key, value) {
+        if(value["license"].toString() == vehicleinfo.license) {
+          setState((){
+            servicesinfo.add(ServiceModel.fromJSON({key:value}));
+          });
+        }
+      });
+    });
+    /*JSON_Test_Internal.services.forEach((key, value) {
       if(value["license"].toString() == vehicleinfo.license) {
         setState((){
           servicesinfo.add(ServiceModel.fromJSON({key:value}));
         });
       }
-    });
+    });*/
+  }
+
+  Future<void> _updateProperty(String _property, String _newValue)async {
+    final dbVehicles = FirebaseDatabase.instance.reference().child("vehicles");
+    await dbVehicles.child(vehicleinfo.license).update({_property : _newValue});
+    await _initInfos();
+  }
+
+  Container _showModal(BuildContext context, String _property, String _previous){
+    TextEditingController _controller = TextEditingController();
+    bool _updating = false;
+    return Container(
+      height: 400,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.green, width: 2),
+        borderRadius: BorderRadius.circular(8)
+      ),
+      child: ListView(
+        children: <Widget>[
+          const ListTile(
+              title: const Text("Alterar", textAlign: TextAlign.center,),
+          ),
+          TextField(
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              icon: Icon(Icons.sync_alt),
+              labelText: _previous
+            ),
+            enabled: !_updating,
+            controller: _controller,
+            onEditingComplete: (){
+              print(_controller.text);
+              _updateProperty(_property, _controller.text).then((value) {
+                Navigator.pop(context);
+              });
+              },
+          ),
+        ],
+      ),
+    );
   }
 
   String translateServiceStatus(int status){
@@ -157,11 +225,19 @@ class _VehicleScreen extends State<VehicleScreen> {
                             ListTile(
                               title:Text(vehicleinfo.model, textAlign: TextAlign.center),
                               trailing: Icon(Icons.directions_car),
+                              onLongPress: (){ showModalBottomSheet(
+                                context: context,
+                                builder: (ctx) => _showModal(context, "model", vehicleinfo.model)
+                              );}
                             ),
                             if(_isEditing) const Divider(),
                             ListTile(
                               title: Text(vehicleinfo.year, textAlign: TextAlign.center),
-                              trailing: Icon(Icons.date_range),
+                              trailing: const Icon(Icons.date_range),
+                                onLongPress: (){ showModalBottomSheet(
+                                    context: context,
+                                    builder: (ctx) => _showModal(context, "year", vehicleinfo.year)
+                                );}
                             ),
                             if(_isEditing) const Divider(),
                             ListTile(
@@ -173,13 +249,17 @@ class _VehicleScreen extends State<VehicleScreen> {
                                       Text(vehicleinfo.renavam)]
                                 ),
                               trailing: Icon(Icons.assignment_outlined),
+                                onLongPress: (){ showModalBottomSheet(
+                                    context: context,
+                                    builder: (ctx) => _showModal(context, "renavam", vehicleinfo.renavam)
+                                );}
                             ),
                           ]
                       ),
                       ExpansionTile(
                           leading: const Icon(Icons.person, size: 32,),
                           title: const Text("PROPRIETÁRIO(A)", textAlign: TextAlign.center, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                          //childrenPadding: EdgeInsets.only(top: 10),
+                          //childrenPadding: EdgeInset s.only(top: 10),
                           children: <Widget>[
                             ListTile(
                               title:

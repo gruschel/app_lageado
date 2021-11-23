@@ -17,8 +17,8 @@ class ServiceModel{
     this.serviceType = "BALANCEAMENTO"}
       );
 
-  factory ServiceModel.fromJSON(Map<int, dynamic> json){
-    int _key = json.keys.elementAt(0);
+  factory ServiceModel.fromJSON(Map<String, dynamic> json){
+    int _key = int.parse(json.keys.elementAt(0));
     return ServiceModel( id: _key,
       license: json[_key]["license"].toString(),
       status: json[_key]["status"],

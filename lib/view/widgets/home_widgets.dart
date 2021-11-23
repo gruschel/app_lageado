@@ -25,28 +25,28 @@ void tryNavigateToVehicle(BuildContext context, String license){
           }));
 }
 
-void tryNavigateToService(BuildContext context, int id){
+void tryNavigateToService(BuildContext context, String id){
   //print("Try Navigate $license");
   Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) {
-            return ServiceScreen(serviceId: id);
+            return ServiceScreen(serviceId: int.parse(id));
           }));
 }
 
-void tryNavigateToOwner(BuildContext context, int id){
+void tryNavigateToOwner(BuildContext context, String id){
   Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) {
-            return OwnerScreen(ownerId: id);
+            return OwnerScreen(ownerId: int.parse(id));
           }));
 }
 
-Widget vehiclesList(BuildContext context, int numItens, Map<String, dynamic> cars){
+Widget vehiclesList(BuildContext context, Map<String, dynamic> cars){
   return ListView.builder(
-  itemCount: numItens,
+  itemCount: cars.length,
   padding: const EdgeInsets.all(16),
       itemBuilder: (BuildContext context, int i){
         String _license = cars.keys.elementAt(i).toString();
@@ -58,13 +58,13 @@ Widget vehiclesList(BuildContext context, int numItens, Map<String, dynamic> car
   );
 }
 
-Widget servicesList(BuildContext context, int numItens, Map<int, dynamic> services){
+Widget servicesList(BuildContext context, Map<String, dynamic> services){
 
   return ListView.builder(
-  itemCount: numItens,
+  itemCount: services.length,
   padding: const EdgeInsets.all(16),
   itemBuilder: (BuildContext context, int i){
-    int _id = services.keys.elementAt(i);
+    String _id = services.keys.elementAt(i);
     return ListTile(
       title: Text("O.S.: $_id"),
       onTap : (){tryNavigateToService(context, _id);} ,
@@ -73,13 +73,13 @@ Widget servicesList(BuildContext context, int numItens, Map<int, dynamic> servic
   );
 }
 
-Widget ownersList(BuildContext context, int numItens, Map<int, dynamic> owners){
+Widget ownersList(BuildContext context, Map<String, dynamic> owners){
 
   return ListView.builder(
-  itemCount: numItens,
+  itemCount: owners.length,
   padding: const EdgeInsets.all(16),
   itemBuilder: (BuildContext context, int i){
-    int _id = owners.keys.elementAt(i);
+    String _id = owners.keys.elementAt(i);
     return ListTile(
       leading: Icon(Icons.people),
       title: Text("$_id - ${owners[_id]["name"]}", textAlign: TextAlign.center),

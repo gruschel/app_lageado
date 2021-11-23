@@ -34,14 +34,14 @@ class _OwnerScreen extends State<OwnerScreen> {
   //@Todo: filter info
   Future<void> getOwnerInfo() async{
     ownerInfo = OwnerModel();
-    JSON_Test_Internal.owners.forEach((key, value) {
+    /*JSON_Test_Internal.owners.forEach((key, value) {
       if(key == ownerId) {
         setState((){
           ownerInfo = OwnerModel.fromJSON({key:value});
         });
         return;
       }
-    });
+    });*/
   }
 
   Future<void> _initInfos() async{
