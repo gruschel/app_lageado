@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:lageado_ac/model/owner_model.dart';
-import 'package:lageado_ac/model/test/json_test.dart';
+import 'package:flutter/services.dart';
 import 'package:lageado_ac/model/service_model.dart';
 import 'package:lageado_ac/model/vehicle_model.dart';
 import 'package:lageado_ac/view/widgets/owner_screen_main.dart';
@@ -41,17 +41,14 @@ class _VehicleScreen extends State<VehicleScreen> {
   }
 
   Future<void> _initInfos() async{
-    getVehicleInfo();
-    getOwnerInfo();
-    getServiceInfo();
-    if(servicesinfo.isNotEmpty) {
-      for(int i = 0; i < servicesinfo.length;i++) {
-      }
-    }
-    await Future.delayed(const Duration(seconds: 1));
-    setState((){
-      _isLoading = false;
-    });
+    await getVehicleInfo();
+    await getOwnerInfo();
+    await getServiceInfo();
+    print("****Deu");
+    _isLoading = false;
+
+
+    //await Future.delayed(const Duration(seconds: 1));
   }
 
   //@Todo: filter info
@@ -76,12 +73,12 @@ class _VehicleScreen extends State<VehicleScreen> {
   //@Todo: filter info
   Future<void> getOwnerInfo() async{
     ownerinfo = OwnerModel();
-    _ownersDB = FirebaseDatabase.instance.reference().child("services");
+    _ownersDB = FirebaseDatabase.instance.reference().child("owners");
     await _ownersDB.once().then((DataSnapshot dataSnapshot){
       final s = json.encode(dataSnapshot.value);
       Map<String, dynamic> decoded = json.decode(s);
       decoded.forEach((key, value) {
-        if(key == vehicleinfo.ownerid) {
+        if(key == vehicleinfo.ownerid.toString()) {
           setState((){
             ownerinfo = OwnerModel.fromJSON({key:value});
           });
@@ -106,6 +103,9 @@ class _VehicleScreen extends State<VehicleScreen> {
         }
       });
     });
+    if(servicesinfo.isEmpty) {
+      setState((){});
+    }
     /*JSON_Test_Internal.services.forEach((key, value) {
       if(value["license"].toString() == vehicleinfo.license) {
         setState((){
@@ -156,6 +156,86 @@ class _VehicleScreen extends State<VehicleScreen> {
     );
   }
 
+  Container _showAddOwnerModal(BuildContext context){
+    TextEditingController _nameController = TextEditingController();
+    return Container(
+      height: 500,
+      padding: MediaQuery.of(context).viewInsets,
+      decoration: BoxDecoration(
+          border: Border.all(color: Colors.green, width: 2),
+          borderRadius: BorderRadius.circular(8)
+      ),
+      child: ListView(
+        children: <Widget>[
+          const ListTile(
+            title: const Text("Nome", textAlign: TextAlign.center,),
+          ),
+          TextField(
+            decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                //icon: Icon(Icons.sync_alt),
+                labelText: "Inserir o Nome"
+            ),
+            controller: _nameController,
+            onEditingComplete: (){
+              //print(_nameController.text);
+            },
+          ),
+          ElevatedButton(
+            child: Text("Confirmar"),
+            onPressed: (){
+              _tryAddOwner(context, _nameController.text).then((newId){
+                print("newID: " + newId.toString());
+                if (newId >= 0){
+                  final dbVehicles = FirebaseDatabase.instance.reference().child("vehicles");
+                  dbVehicles.child(license).update({"ownerid":newId.toString()}).then((value) {
+                    _initInfos();
+                  });
+                }
+              });
+
+            },
+          ),
+
+        ],
+      ),
+    );
+  }
+
+  Future<int> _tryAddOwner(BuildContext context, String newName) async{
+    if(newName.isNotEmpty){
+      print("not empty");
+      final dbOwners = FirebaseDatabase.instance.reference().child("owners");
+      final owner = {
+        "name": newName,
+        "phone" : "________",
+        "email" : "________",
+        "address" : "______",
+        "district" : "______"
+      };
+      int newId = -1;
+      await dbOwners.once().then((DataSnapshot dataSnapshot){
+        final s = json.encode(dataSnapshot.value);
+        Map<String, dynamic> decoded = json.decode(s);
+        decoded.forEach((key, value) {
+          print("key " + value["name"] + "___new " + newName);
+          if(newId == -1 && value["name"] == newName){
+            //newId = int.parse(value["name"].toString());
+            newId = int.parse(key);
+          }
+        });
+        if (newId == -1){
+          newId = int.parse(decoded.keys.last) + 1;
+        }
+        //print(s.length);
+      });
+      await dbOwners.child(newId.toString()).update(owner);
+      Navigator.pop(context);
+      return newId;
+    }
+    else{print("empty"); return -1;}
+  }
+
   String translateServiceStatus(int status){
     switch(status){
       case 0: return "Em Aberto"; break;
@@ -191,12 +271,12 @@ class _VehicleScreen extends State<VehicleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey,
+      backgroundColor: Color(0xFF353535),
       body:
       CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
-                backgroundColor: Colors.blue,
+                backgroundColor: Color(0xFF4E848A),
                 pinned: true,
                 snap: false,
                 floating: false,
@@ -207,7 +287,7 @@ class _VehicleScreen extends State<VehicleScreen> {
                     //titlePadding: const EdgeInsets.only(top: 10),
                     title:
                     Text(
-                        vehicleinfo.license, style: const TextStyle(fontSize: 32, letterSpacing: 2)
+                        vehicleinfo.license, style: const TextStyle(fontSize: 32, letterSpacing: 2, color: Colors.white)
                     )
                 )
             ),
@@ -219,6 +299,7 @@ class _VehicleScreen extends State<VehicleScreen> {
                       ExpansionTile(
                           leading: const Icon(Icons.directions_car, size: 32,),
                           title: const Text("VEÍCULO", textAlign: TextAlign.center, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                          textColor: Colors.white,
                           initiallyExpanded: true,
                           //childrenPadding: EdgeInsets.only(top: 10),
                           children: <Widget>[
@@ -260,7 +341,23 @@ class _VehicleScreen extends State<VehicleScreen> {
                           leading: const Icon(Icons.person, size: 32,),
                           title: const Text("PROPRIETÁRIO(A)", textAlign: TextAlign.center, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
                           //childrenPadding: EdgeInset s.only(top: 10),
-                          children: <Widget>[
+                          children: ownerinfo.id == -1 ?
+                          <Widget>[
+                            ElevatedButton(
+                              child: Text("Adicionar Proprietário"),
+                              onPressed: (){
+                                showModalBottomSheet(
+                                    isScrollControlled: true,
+                                    context: context,
+                                    builder: (ctx) => _showAddOwnerModal(context)
+                                );
+                              },
+                            ),
+                            const SizedBox(
+                              height: 15
+                            )
+                          ]    :
+                          <Widget>[
                             ListTile(
                               title:
                               Text(ownerinfo.name, textAlign: TextAlign.center),
@@ -269,22 +366,24 @@ class _VehicleScreen extends State<VehicleScreen> {
                             ),
                             if(_isEditing) const Divider(),
                             ListTile(
-                              title:Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    const Padding(
-                                      padding: EdgeInsets.only(left: 16,right: 10),
-                                      child: Icon(Icons.phone, color: Colors.black26),
-                                    ),
-                                    Text(ownerinfo.phone, textAlign: TextAlign.center),
-                                    const SizedBox(width:60),
-                                    const Padding(
-                                      padding: EdgeInsets.only(left: 16,right: 10),
-                                      child: Icon(Icons.alternate_email, color: Colors.black26),
-                                    ),
-                                    Text(ownerinfo.email, textAlign: TextAlign.center),
-                                  ]
-                              ),
+                              trailing: const Icon(Icons.phone, color: Colors.black26),
+                              title:Text(ownerinfo.phone, textAlign: TextAlign.center),
+                              onLongPress: (){
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Número copiado')),
+                                );
+                                Clipboard.setData(ClipboardData(text: ownerinfo.phone));
+                              },
+                            ),
+                            ListTile(
+                                trailing: const Icon(Icons.alternate_email, color: Colors.black26),
+                                title:Text(ownerinfo.email, textAlign: TextAlign.center),
+                                onLongPress: (){
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('Email copiado')),
+                                  );
+                                  Clipboard.setData(ClipboardData(text: ownerinfo.email));
+                                }
                             ),
                             if(_isEditing) const Divider(),
                             ListTile(

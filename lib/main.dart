@@ -19,7 +19,9 @@ class MyApp extends StatelessWidget {
       title: 'Lageado Auto Center',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.orange,
+        backgroundColor: Color(0xFF353535),
+          scaffoldBackgroundColor: Color(0xFF353535)
       ),
       home: HomeScreen(),
       //home: VehicleScreen(license: "1"),

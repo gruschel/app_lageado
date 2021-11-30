@@ -1,7 +1,11 @@
+import 'dart:convert';
+
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:lageado_ac/model/owner_model.dart';
 import 'package:lageado_ac/model/test/json_test.dart';
 import 'package:lageado_ac/model/vehicle_model.dart';
+import 'package:flutter/services.dart';
 
 import '../vehicle_screen_main.dart';
 
@@ -34,14 +38,19 @@ class _OwnerScreen extends State<OwnerScreen> {
   //@Todo: filter info
   Future<void> getOwnerInfo() async{
     ownerInfo = OwnerModel();
-    /*JSON_Test_Internal.owners.forEach((key, value) {
-      if(key == ownerId) {
-        setState((){
-          ownerInfo = OwnerModel.fromJSON({key:value});
-        });
-        return;
-      }
-    });*/
+    final _ownersDB = FirebaseDatabase.instance.reference().child("owners");
+    await _ownersDB.once().then((DataSnapshot dataSnapshot){
+      final s = json.encode(dataSnapshot.value);
+      Map<String, dynamic> decoded = json.decode(s);
+      decoded.forEach((key, value) {
+        if(key == ownerId.toString()) {
+          setState((){
+            ownerInfo = OwnerModel.fromJSON({key:value});
+          });
+          return;
+        }
+      });
+  });
   }
 
   Future<void> _initInfos() async{
@@ -63,12 +72,12 @@ class _OwnerScreen extends State<OwnerScreen> {
     @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey,
+      backgroundColor: Color(0xFF353535),
       body:
       CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
-                backgroundColor: Colors.blue,
+                backgroundColor: Color(0xFF4E848A),
                 pinned: true,
                 snap: false,
                 floating: false,
@@ -80,7 +89,7 @@ class _OwnerScreen extends State<OwnerScreen> {
                   title:
                   Text(
                     ownerInfo.id.toString() + " - " + ownerInfo.name,
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: 20, color: Colors.white),
                   ),
                 )
             ),
@@ -92,10 +101,22 @@ class _OwnerScreen extends State<OwnerScreen> {
                           ListTile(
                             trailing: const Icon(Icons.phone, color: Colors.black26),
                             title:Text(ownerInfo.phone, textAlign: TextAlign.center),
+                              onLongPress: (){
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Email copiado')),
+                                );
+                                Clipboard.setData(ClipboardData(text: ownerInfo.phone));
+                              }
                           ),
                           ListTile(
                             trailing: const Icon(Icons.alternate_email, color: Colors.black26),
                             title:Text(ownerInfo.email, textAlign: TextAlign.center),
+                              onLongPress: (){
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Email copiado')),
+                                );
+                                Clipboard.setData(ClipboardData(text: ownerInfo.email));
+                              }
                           ),
                           ListTile(
                               title: Text(ownerInfo.adress, textAlign: TextAlign.center),

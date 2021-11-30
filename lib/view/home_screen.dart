@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lageado_ac/model/test/json_test.dart';
+import 'package:lageado_ac/view/vehicle_screen_main.dart';
 import 'package:lageado_ac/view/widgets/home_widgets.dart';
 import 'package:lageado_ac/model/vehicle_model.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -17,10 +18,10 @@ class HomeScreen extends StatefulWidget{
 class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin{
 
   final _kTabs = <Widget>[
-    const Center(child: Icon(Icons.home)),
-    const Center(child: Icon(Icons.directions_car)),
-    const Center(child: Icon(Icons.car_repair)),
-    const Center(child: Icon(Icons.people))
+    const Center(child: Icon(Icons.home, color: Colors.white)),
+    const Center(child: Icon(Icons.directions_car, color: Colors.white)),
+    const Center(child: Icon(Icons.car_repair, color: Colors.white)),
+    const Center(child: Icon(Icons.people, color: Colors.white))
   ];
   Map<String, dynamic> _carsList = {};
   Map<String, dynamic> _servicesList = {};
@@ -41,7 +42,7 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin{
       setState((){_carsList = json.decode(s);});
       /*Map<String, dynamic> decoded = json.decode(s);
       decoded.forEach((key, value) { print("key: " + key + "_value: " + value.toString());});*/
-      _carsList.forEach((key, value) { print("key: " + key + "_value: " + value.toString());});
+      //_carsList.forEach((key, value) { print("key: " + key + "_value: " + value.toString());});
     });
   }
 
@@ -63,7 +64,7 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin{
       setState((){_ownersList = json.decode(s);});
       /*Map<String, dynamic> decoded = json.decode(s);
       decoded.forEach((key, value) { print("key: " + key + "_value: " + value.toString());});*/
-      _ownersList.forEach((key, value) { print("key: " + key + "_value: " + value.toString());});
+      //_ownersList.forEach((key, value) { print("key: " + key + "_value: " + value.toString());});
     });
   }
 
@@ -98,18 +99,18 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin{
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.red,
+        backgroundColor: Color(0xFF4E848A),
         /*leading: IconButton(
           onPressed: () {},
           icon: const Icon(Icons.menu),
         ),*/
-        title: const Text("Lageado Auto Center", textAlign: TextAlign.center),
+        title: const Text("Lageado Auto Center", textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
         actions: [
-          IconButton(
+          /*IconButton(
               //tooltip: "search_main_tooltip",
-              icon: const Icon(Icons.search),
+              icon: const Icon(Icons.search, color: Colors.white),
               onPressed: (){}
-          )
+          )*/
         ],
         bottom: TabBar(
           tabs: _kTabs,
@@ -126,7 +127,7 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin{
               //tooltip: main_opcoes_botao_carro,
               child: Icon(Icons.build),
               onPressed: () {
-                _retrieveVehicles();
+                //_tryAddService(context);
               }
           ),
           FloatingActionButton(
@@ -134,7 +135,13 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin{
               backgroundColor: Colors.blue,
               //tooltip: main_opcoes_botao_carro,
               child: Icon(Icons.directions_car),
-              onPressed: () {}
+              onPressed: () {
+                showModalBottomSheet(
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (ctx) => _showNewVehicleModal(context)
+                );
+              }
           ),
           FloatingActionButton(
               heroTag: "btmain",
@@ -152,4 +159,81 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin{
     );
   }
 
+}
+
+void _tryAddCar(BuildContext context) {
+
+}
+
+Container _showNewVehicleModal(BuildContext context){
+  TextEditingController _licenseController = TextEditingController();
+  TextEditingController _modelController = TextEditingController();
+  return Container(
+    height: 500,
+    padding: MediaQuery.of(context).viewInsets,
+    decoration: BoxDecoration(
+        border: Border.all(color: Colors.green, width: 2),
+        borderRadius: BorderRadius.circular(8)
+    ),
+    child: ListView(
+      children: <Widget>[
+        const ListTile(
+          title: const Text("Placa", textAlign: TextAlign.center,),
+        ),
+        TextField(
+          decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              //icon: Icon(Icons.sync_alt),
+              labelText: "Inserir a placa"
+          ),
+          controller: _licenseController,
+          onEditingComplete: (){
+            print(_licenseController.text);
+          },
+        ),
+        const ListTile(
+          title: const Text("Modelo", textAlign: TextAlign.center,),
+        ),
+        TextField(
+          decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              //icon: Icon(Icons.sync_alt),
+              labelText: "Inserir o modelo do veículo"
+          ),
+          controller: _modelController,
+          onEditingComplete: (){
+            print(_modelController.text);
+          },
+        ),
+        ElevatedButton(
+          child: Text("Confirmar"),
+          onPressed: (){
+            if(_modelController.text.isNotEmpty && _licenseController.text.isNotEmpty ){
+              print("not empty");
+              final dbVehicles = FirebaseDatabase.instance.reference().child("vehicles");
+              final vh = {
+                "model": _modelController.text,
+                "year" : "2021",
+                "renavam" : "--",
+                "year" : "----",
+                "ownerid" : "-1"
+              };
+
+              dbVehicles.child(_licenseController.text).update(vh).then((value) {
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) {
+                          return VehicleScreen(license: _licenseController.text);
+                        }));
+              });
+            }
+            print("empty");
+          },
+        ),
+
+      ],
+    ),
+  );
 }

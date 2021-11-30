@@ -10,8 +10,8 @@ class OwnerModel{
   OwnerModel({this.id = -1, this.name = "Generic Owner", this.phone = "9999999", this.adress = "Av. Getúlio Vargas, 1066", this.district = "Menino Deus", this.email = "email@email.com.br"});
 
   factory OwnerModel.fromJSON(Map<String, dynamic> json){
-    int _key = int.parse(json.keys.elementAt(0));
-    return OwnerModel( id: _key,
+    String _key = json.keys.elementAt(0);
+    return OwnerModel( id: int.parse(_key),
       name: json[_key]["name"].toString(),
       phone: json[_key]["phone"].toString(),
       email: json[_key]["email"].toString(),

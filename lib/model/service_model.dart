@@ -18,14 +18,16 @@ class ServiceModel{
       );
 
   factory ServiceModel.fromJSON(Map<String, dynamic> json){
-    int _key = int.parse(json.keys.elementAt(0));
+    int _key = int.parse(json.keys.first);
+    print(json.toString());
+    //print(json[_key]["license"] + "_____000000-0-0-0-");
     return ServiceModel( id: _key,
-      license: json[_key]["license"].toString(),
-      status: json[_key]["status"],
-      startDate: json[_key]["startDate"].toString(),
-      endDate: json[_key]["endDate"].toString(),
-      description: json[_key]["description"].toString(),
-      serviceType: json[_key]["serviceType"].toString(),
+      license: json[json.keys.first]["license"].toString(),
+      status: int.parse(json[json.keys.first]["status"]),
+      startDate: json[json.keys.first]["startDate"].toString(),
+      endDate: json[json.keys.first]["endDate"].toString(),
+      description: json[json.keys.first]["description"].toString(),
+      serviceType: json[json.keys.first]["serviceType"].toString(),
     );
   }
 
