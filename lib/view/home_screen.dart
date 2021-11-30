@@ -84,6 +84,78 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin{
     }
   }
 
+  String dropdownValue = "BALANCEAMENTO";
+
+  Widget _showNewServiceModal(BuildContext context){
+    TextEditingController _licenseController = TextEditingController();
+
+    return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          return Container(
+            height: 500,
+            padding: MediaQuery.of(context).viewInsets,
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.green, width: 2),
+                borderRadius: BorderRadius.circular(8)
+            ),
+            child: ListView(
+              children: <Widget>[
+                const ListTile(
+                  title: const Text("Placa", textAlign: TextAlign.center,),
+                ),
+                TextField(
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      //icon: Icon(Icons.sync_alt),
+                      labelText: "Inserir a placa"
+                  ),
+                  controller: _licenseController,
+                  onEditingComplete: (){
+                    print(_licenseController.text);
+                  },
+                ),
+                const ListTile(
+                  title: const Text("Tipo", textAlign: TextAlign.center,),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButton<String>(
+                      value: dropdownValue,
+                      alignment: Alignment.center,
+                      //icon: const Icon(Icons.arrow_downward),
+                      //iconSize: 24,
+                      //elevation: 16,
+                      style: const TextStyle(color: Colors.black),
+                      underline: Container(
+                        height: 2,
+                        color: Colors.grey,
+                      ),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          dropdownValue = newValue!;
+                        });
+                      },
+                      items: <String>['BALANCEAMENTO', 'GEOMETRIA', 'REPARO']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList()
+                  ),
+                ),
+                ElevatedButton(
+                  child: Text("Confirmar"),
+                  onPressed: (){
+                    if(_licenseController.text.isNotEmpty){
+                      tryAddService(context, _licenseController.text, dropdownValue);
+                  }}
+                ),
+              ],
+            ),
+          );});
+  }
+
   late TabController _tabController;
 
   @override
@@ -127,7 +199,11 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin{
               //tooltip: main_opcoes_botao_carro,
               child: Icon(Icons.build),
               onPressed: () {
-                //_tryAddService(context);
+                showModalBottomSheet(
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (ctx) => _showNewServiceModal(context)
+                );
               }
           ),
           FloatingActionButton(
@@ -159,6 +235,25 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin{
     );
   }
 
+  Future <void> tryAddService(BuildContext context, String license, String type) async {
+    final dbServices = FirebaseDatabase.instance.reference().child("services");
+    final service = {
+      "license": license,
+      "serviceType": type,
+      "startDate": "----",
+      "endDate": "----",
+      "description": ".",
+      "status": "0"
+    };
+    int newId = -1;
+    await dbServices.once().then((DataSnapshot dataSnapshot) {
+      final s = json.encode(dataSnapshot.value);
+      Map<String, dynamic> decoded = json.decode(s);
+      newId = int.parse(decoded.keys.last) + 1;
+      //print(s.length);
+    });
+    dbServices.child(newId.toString()).update(service);
+  }
 }
 
 void _tryAddCar(BuildContext context) {
@@ -237,3 +332,4 @@ Container _showNewVehicleModal(BuildContext context){
     ),
   );
 }
+

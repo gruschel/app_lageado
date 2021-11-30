@@ -214,6 +214,7 @@ class _VehicleScreen extends State<VehicleScreen> {
         "district" : "______"
       };
       int newId = -1;
+      bool bFound = false;
       await dbOwners.once().then((DataSnapshot dataSnapshot){
         final s = json.encode(dataSnapshot.value);
         Map<String, dynamic> decoded = json.decode(s);
@@ -224,7 +225,10 @@ class _VehicleScreen extends State<VehicleScreen> {
             newId = int.parse(key);
           }
         });
-        if (newId == -1){
+        if(!bFound) {
+          //toast
+        }
+        else if (newId == -1){
           newId = int.parse(decoded.keys.last) + 1;
         }
         //print(s.length);
