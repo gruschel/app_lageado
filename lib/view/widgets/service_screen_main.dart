@@ -6,6 +6,7 @@ import 'package:lageado_ac/model/test/json_test.dart';
 import 'package:lageado_ac/model/service_model.dart';
 import 'package:lageado_ac/model/vehicle_model.dart';
 import 'package:intl/intl.dart';
+import 'package:lageado_ac/model/pdf/pdf_model.dart';
 
 
 class ServiceScreen extends StatefulWidget{
@@ -262,12 +263,30 @@ class _ServiceScreen extends State<ServiceScreen> {
     @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+       /* leading: IconButton(
+          onPressed: () {},
+          icon: const Icon(Icons.menu),),*/
       key: _scaffoldKey,
         backgroundColor: Color(0xFF353535),
       body:
       CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
+                /*leading: IconButton(
+                    onPressed: () {
+                      PDFModel _model = PDFModel();
+                      _model.createPDF();
+                    },
+                    icon: const Icon(Icons.menu)),*/
+              actions: [
+                IconButton(
+                    onPressed: () {
+                      PDFModel _model = PDFModel();
+                      _model.createPDF();
+                    },
+                    icon: const Icon(Icons.menu))
+              ],
                 backgroundColor: Color(0xFF4E848A),
                 pinned: true,
                 snap: false,
